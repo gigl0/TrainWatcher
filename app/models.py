@@ -24,9 +24,9 @@ class Route(Base):
     active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     user: Mapped["User"] = relationship(back_populates="routes")
-    trains: Mapped[list["TrainStatus"]] = relationship(back_populates="route", cascade="all, delete")
+    trains: Mapped[list["Train"]] = relationship(back_populates="route", cascade="all, delete")
 
-class TrainStatus(Base):
+class Train(Base):
     __tablename__ = "trains"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     route_id: Mapped[int] = mapped_column(ForeignKey("routes.id", ondelete="CASCADE"))
@@ -44,3 +44,11 @@ class NotificationLog(Base):
     train_code: Mapped[str] = mapped_column(String(20))
     event_type: Mapped[str] = mapped_column(String(30))  # ritardo/cancellazione/ripristino
     sent_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+class Station(Base):
+    __tablename__ = "stations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+

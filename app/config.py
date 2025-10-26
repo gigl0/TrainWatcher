@@ -13,3 +13,5 @@ class Settings(BaseSettings):
 
 # Istanza globale
 settings = Settings()
+# (opzionale) in app/config.py, temporaneamente:
+print("[FIREBASE] Loaded key:", bool(settings.firebase_server_key))

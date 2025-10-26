@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
 from datetime import datetime
 from ..db.session import SessionLocal
-from ..models import Route, TrainStatus, NotificationLog, User
+from ..models import Route, Train, NotificationLog, User
 from .viaggiatreno import get_departures, get_train_status, normalize_status
 from .notifications import send_push
 
@@ -35,16 +35,16 @@ def _check_routes():
 def _handle_status(db: Session, rt: Route, data: dict, train_code: str):
     status, delay = normalize_status(data)
     # leggi ultimo record
-    last: TrainStatus | None = (
-        db.query(TrainStatus)
-        .filter(TrainStatus.route_id == rt.id, TrainStatus.train_code == train_code)
-        .order_by(TrainStatus.last_update.desc())
+    last: Train | None = (
+        db.query(Train)
+        .filter(Train.route_id == rt.id, Train.train_code == train_code)
+        .order_by(Train.last_update.desc())
         .first()
     )
     changed = False
     if not last or last.last_status != status or last.delay_minutes != delay:
         changed = True
-        new_row = TrainStatus(
+        new_row = Train(
             route_id=rt.id,
             train_code=train_code,
             last_status=status,
