@@ -37,13 +37,17 @@ class Train(Base):
 
     route: Mapped["Route"] = relationship(back_populates="trains")
 
+# app/models.py
+
 class NotificationLog(Base):
-    __tablename__ = "notifications_log"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    route_id: Mapped[int] = mapped_column(ForeignKey("routes.id", ondelete="CASCADE"))
-    train_code: Mapped[str] = mapped_column(String(20))
-    event_type: Mapped[str] = mapped_column(String(30))  # ritardo/cancellazione/ripristino
-    sent_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    __tablename__ = "notification_logs"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    route_id: Mapped[int] = mapped_column(ForeignKey("routes.id"))
+    train_code: Mapped[str]
+    event_type: Mapped[str]
+    sent_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+
 
 class Station(Base):
     __tablename__ = "stations"
